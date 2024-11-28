@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Categoria extends Model
 {
     use HasFactory;
-
-
-
+    public function getRouteKeyName() {
+        return "slug";
+    }
     public function proyectos(){
         return $this->hasMany(Proyectos::class);
     }

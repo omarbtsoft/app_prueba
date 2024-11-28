@@ -9,7 +9,8 @@
 
   @endisset
 </pre>
-<form method="POST" action="{{ route('proyect.update', $proyecto) }}"  enctype="multipart/form-data">
+
+<form class="formulario max-w-sm mx-auto" style="width:500px"  method="POST" action="{{ route('proyect.update', $proyecto) }}"  enctype="multipart/form-data">
 
 
     @method('PATCH')

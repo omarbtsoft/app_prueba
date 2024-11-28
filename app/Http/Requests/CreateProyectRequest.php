@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 //use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Gate;
 
 class CreateProyectRequest extends FormRequest
 {
@@ -25,28 +26,29 @@ class CreateProyectRequest extends FormRequest
     public function rules(): array
     {
 
-//      dd($this->route("proyecto"));
+        //      dd($this->route("proyecto"));
         return [
-        "titulo"=> "required",
-        //"slug"=> ["required", "unique:proyectos,slug"],
+            "titulo" => "required",
+            //"slug"=> ["required", "unique:proyectos,slug"],
 
-        "slug"=> [
-            "required",
-            Rule::unique('proyectos')->ignore($this->route('proyecto')),
-        ],
-        "categoria_id"=>"required",
-        "descripcion"=> "required",
-        "image"=> [
-        $this->route('proyecto')? "nullable":"required",
-        "image"],
+            "slug" => [
+                "required",
+                Rule::unique('proyectos')->ignore($this->route('proyecto')),
+            ],
+            "categoria_id" => ["required", "exists:categorias,id"],
+            "descripcion" => "required",
+            "image" => [
+                $this->route('proyecto') ? "nullable" : "required",
+                "image"
+            ],
         ];
     }
     public function messages(): array
     {
         return [
-        "titulo.required"=> "Se requiere que ingreses el titulo",
-        "slug.required"=> "El necesario el Url o Slug ",
-        "descripcion.required"=> "Es necesario que tenga descripcion",
+            "titulo.required" => "Se requiere que ingreses el titulo",
+            "slug.required" => "El necesario el Url o Slug ",
+            "descripcion.required" => "Es necesario que tenga descripcion",
         ];
     }
 }

@@ -6,7 +6,7 @@
 @include('partials.validacion-errors')|
 
 
-<form action="{{ route('proyect.store') }}" method="post"  enctype="multipart/form-data">
+<form  class="formulario max-w-sm mx-auto" style="width:500px" action="{{ route('proyect.store') }}" method="post"  enctype="multipart/form-data">
   @include('proyectos._form', ['BtnText'=>'Nuevo Proyecto'])
 </form>
 

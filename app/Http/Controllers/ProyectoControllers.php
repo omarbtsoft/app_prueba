@@ -7,12 +7,11 @@ use App\Http\Requests\CreateProyectRequest;
 use App\Models\Categoria;
 use App\Models\Proyectos;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
-use Intervention\Image\ImageManager;
-use Intervention\Image\Drivers\Gd\Driver;
+
 
 class ProyectoControllers extends Controller
 {
@@ -36,13 +35,16 @@ class ProyectoControllers extends Controller
         ];
 
         //$listaProyecto1= DB::table("proyectos")->get();
-        $listaProyecto1 = DB::table("proyectos")->orderBy('created_at', 'desc')->paginate(5);
+        //$listaProyecto1 = DB::table("proyectos")->orderBy('created_at', 'desc')->paginate(5);
+
+        $listaProyecto1 = Proyectos::with('categoria')->latest()->paginate(5);
         foreach ($listaProyecto1 as $proyecto) {
             // Agregar la diferencia de tiempo en formato relativo
             $proyecto->tiempo_relativo = Carbon::parse($proyecto->created_at)->diffForHumans();
         }
 
         return view("proyectos", compact("listaProyecto1"));
+        //return view("proyectos", ["listaProyecto1" => $listaProyecto1, "newProyecto"=>new Proyectos()]);
     }
 
     /**
@@ -50,7 +52,21 @@ class ProyectoControllers extends Controller
      */
     public function create()
     {
-        return view("proyectos.create", ["categorias"=> Categoria::pluck('nombre', 'id')]);
+
+
+        //$this->authorize('crear-proyecto');
+        abort_unless(Gate::allows("crear-proyecto"),403);
+        // if(Gate::allows('crear-proyecto')){
+
+        //     return view("proyectos.create", ["proyecto"=> new Proyectos(), "categorias"=> Categoria::pluck('nombre', 'id')]);
+
+        // }
+
+        // abort(403);
+
+     return view("proyectos.create", ["proyecto"=> new Proyectos(), "categorias"=> Categoria::pluck('nombre', 'id')]);
+
+
     }
 
     /**
@@ -58,7 +74,7 @@ class ProyectoControllers extends Controller
      */
     public function store(CreateProyectRequest $request)
     {
-
+        $this->authorize('crear-proyecto');
 
         //dd(request());
 
@@ -79,8 +95,6 @@ class ProyectoControllers extends Controller
             "descripcion" => "required",
         ]);
 
-
-
         //return $request->validated();
         //return Proyectos::create($request->only('titulo', 'slug', 'descripcion'));
         //Proyectos::create($fields);
@@ -100,7 +114,6 @@ class ProyectoControllers extends Controller
      */
     public function show(Proyectos $proyecto)
     {
-
         //return $id ;
         //$proyecto= Proyectos::findOrFail($id);
         return view("proyectos.show", ["proyecto" => $proyecto]);
@@ -111,6 +124,7 @@ class ProyectoControllers extends Controller
      */
     public function edit(Proyectos $proyecto)
     {
+        $this->authorize('crear-proyecto');
 
         //return Categoria::pluck('nombre', 'id');
         return view("proyectos.edit", ["proyecto" => $proyecto, "categorias"=> Categoria::pluck('nombre', 'id')]);
@@ -121,13 +135,13 @@ class ProyectoControllers extends Controller
      */
     public function update(Proyectos $proyecto, CreateProyectRequest $request)
     {
-        /*      $proyecto->update([
+       /*$proyecto->update([
             "titulo"=> request("titulo"),
             "slug"=> request("slug"),
             "descripcion"=> request("descripcion")
         ]);
-
-*/
+        */
+        $this->authorize('crear-proyecto');
 
 
         if ($request->hasFile("image")) {
@@ -135,10 +149,8 @@ class ProyectoControllers extends Controller
                 Storage::delete($proyecto->image);
             }
             $proyecto->fill($request->validated());
-
             $file_url=  request()->file('image')->store('imagenes');// Se tiene que configurar lo que  es el disco duro o seq se tiene que hacer la referencia en file sistem o en .env
             $proyecto->image=$file_url;
-
             $proyecto->save();
 
             // $image = Image::make(Storage::get($proyecto->image));
@@ -146,8 +158,6 @@ class ProyectoControllers extends Controller
             // Storage::put($proyecto->image, $image);
 
             ProyectSaved::dispatch($proyecto);
-
-
         } else {
             $proyecto->update(array_filter($request->validated()));
         }
@@ -156,6 +166,7 @@ class ProyectoControllers extends Controller
         //$proyecto->update($request->validated());
 
         return Redirect::route("proyect.show", $proyecto)->with('status', 'Se actualizo el proyecto');
+
     }
 
     /**
@@ -163,7 +174,6 @@ class ProyectoControllers extends Controller
      */
     public function destroy(Proyectos $proyecto)
     {
-        //return $proyecto;
         $proyecto->delete();
         return Redirect::route("proyect.index")->with('status', 'Se elimino  el proyecto');
     }

@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ContactoControllers;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProyectoControllers;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +15,11 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
+DB::listen(function($query){
+    var_dump($query->sql);
+});
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -56,6 +63,8 @@ Route::view("/contact","contacto")->name("contact");
 
 Route::resource('proyectos', ProyectoControllers::class)->names("proyect");
 
+
+Route::get("/categorias/{categoria}", [CategoriaController::class,'show'])->name("categoria.show");
 //Route::resource('proyectos', ProyectoControllers::class)->names("proyect")->middleware('auth');
 /*
 Route::get('/proyectos', [ProyectoControllers::class, 'index'])->name("proyect");
