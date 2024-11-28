@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.active {
+    color: red ;
+    text-decoration: none;
+}
+
+
+.btn-link{
+    color: white;
+    background: rgba(3, 110, 209, 0.897);
+    border-radius: 5px;
+    padding: 5px 10px;
+}
+
+.btnOk{
+    display: inline-block !important  ;
+}
+
+.container_cards{
+    display: flex ;
+    gap:10px ;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+
+.container_cards > div {
+    width: 300px;
+}
+
+.formulario{
+     width: 400px;
+}
+
+
+.img_input{
+    position: relative;
+    width: 200px;
+}
+
+.img_input > img {
+    width: 100%;
+}
