@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
 DB::listen(function($query){
     var_dump($query->sql);
 });
@@ -62,7 +63,6 @@ Route::view("/about","about")->name("about");
 //Route::view("/proyectos","proyectos", compact("listaProyecto1") )->name("proyectos");
 
 Route::view("/contact","contacto")->name("contact");
-
 //Route::get("/proyectos", 'ProyectoController' )->name("proyectos");
 
 Route::resource('proyectos', ProyectoControllers::class)->names("proyect");
@@ -70,8 +70,6 @@ Route::patch("proyectos/{proyecto}/restore", [ProyectoControllers::class, 'resto
 Route::delete("proyectos/{proyecto}/forceDelete", [ProyectoControllers::class, 'foreceDelete'])->name("proyect.foreceDelete");
 
 Route::get("/categorias/{categoria}", [CategoriaController::class,'show'])->name("categoria.show");
-
-
 Route::post('/contactos', [ContactoControllers::class, 'store'])->name("contactos_post");
 
 

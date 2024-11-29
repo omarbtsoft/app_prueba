@@ -7,11 +7,12 @@ use App\Http\Requests\CreateProyectRequest;
 use App\Models\Categoria;
 use App\Models\Proyectos;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
-
 
 class ProyectoControllers extends Controller
 {
@@ -37,13 +38,39 @@ class ProyectoControllers extends Controller
         //$listaProyecto1= DB::table("proyectos")->get();
         //$listaProyecto1 = DB::table("proyectos")->orderBy('created_at', 'desc')->paginate(5);
 
-        $listaProyecto1 = Proyectos::with('categoria')->latest()->paginate(5);
-        //$listaProyecto1 = Proyectos::withTrashed()->with('categoria')->latest()->paginate(5);
-        //$listaProyecto1 = Proyectos::onlyTrashed()->with('categoria')->latest()->paginate(5);
-        foreach ($listaProyecto1 as $proyecto) {
-            // Agregar la diferencia de tiempo en formato relativo
-            $proyecto->tiempo_relativo = Carbon::parse($proyecto->created_at)->diffForHumans();
+        // Forma numero 1
+        $clave= "proyectos.page.".request('page',1); // Si no tiene page entonces compienza de 1
+
+        if(Cache::tags('proyectos')->has($clave)){
+            $listaProyecto1 = Cache::tags('proyectos')->get($clave);
+        }else {
+            $listaProyecto1 = Proyectos::with('categoria')->latest()->paginate(3);
+            //$listaProyecto1 = Proyectos::withTrashed()->with('categoria')->latest()->paginate(5);
+            //$listaProyecto1 = Proyectos::onlyTrashed()->with('categoria')->latest()->paginate(5);
+            foreach ($listaProyecto1 as $proyecto) {
+                // Agregar la diferencia de tiempo en formato relativo
+                $proyecto->tiempo_relativo = Carbon::parse($proyecto->created_at)->diffForHumans();
+            }
+            Cache::tags('proyectos')->put($clave, $listaProyecto1, 10);
         }
+
+        // $listaProyecto1=Cache::remember($clave, 5, function(){
+        //     return Proyectos::with('categoria')->latest()->paginate(3);
+
+        // });
+
+        // $listaProyecto1=Cache::rememberForever($clave,function(){
+        //        $proyectos = Proyectos::with('categoria')->latest()->paginate(2);
+        //         foreach ($proyectos as $proyecto) {
+        //             $proyecto->tiempo_relativo = Carbon::parse($proyecto->created_at)->diffForHumans();
+        //         }
+
+        //     return $proyectos;
+        // });
+        //Redis::set('listaProyecto1', $listaProyecto1, 1);
+
+        // Otra forma de hacerlo
+
 
         //return view("proyectos", [compact("listaProyecto1"),"proyectosEliminados"=>Proyectos::onlyTrashed()->get() ]);
         return view("proyectos", ["listaProyecto1"=>$listaProyecto1,"proyectosEliminados"=>Proyectos::onlyTrashed()->get() ]);
@@ -117,7 +144,8 @@ class ProyectoControllers extends Controller
      */
     public function show(Proyectos $proyecto)
     {
-        //return $id ;
+
+       //return $id ;
         //$proyecto= Proyectos::findOrFail($id);
         return view("proyectos.show", ["proyecto" => $proyecto]);
     }
@@ -128,9 +156,11 @@ class ProyectoControllers extends Controller
     public function edit(Proyectos $proyecto)
     {
         $this->authorize('crear-proyecto');
-
+        $categorias = Cache::remember("categoria.all", 5, function ()  {
+            return Categoria::pluck('nombre', 'id');
+        });
         //return Categoria::pluck('nombre', 'id');
-        return view("proyectos.edit", ["proyecto" => $proyecto, "categorias"=> Categoria::pluck('nombre', 'id')]);
+        return view("proyectos.edit", ["proyecto" => $proyecto, "categorias"=>$categorias ]);
     }
 
     /**
@@ -144,6 +174,9 @@ class ProyectoControllers extends Controller
             "descripcion"=> request("descripcion")
         ]);
         */
+
+        Cache::tags("proyectos")->flush();
+
         $this->authorize('crear-proyecto');
 
 
@@ -168,6 +201,9 @@ class ProyectoControllers extends Controller
 
         //$proyecto->update($request->validated());
 
+        ///Cache::flush();
+
+
         return Redirect::route("proyect.show", $proyecto)->with('status', 'Se actualizo el proyecto');
 
     }
@@ -181,6 +217,8 @@ class ProyectoControllers extends Controller
 
 
         $proyecto->delete();
+
+        //Cache::flush();
 
         return Redirect::route("proyect.index")->with('status', 'Se elimino  el proyecto');
 
@@ -215,8 +253,6 @@ class ProyectoControllers extends Controller
         $proyecto->restore();
 
         return Redirect::route("proyect.index")->with('status', 'Se  restauro   el proyecto');
-
-
     }
 
 

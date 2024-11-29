@@ -10,14 +10,11 @@
             <h2 class="mb-4 text-4xl leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
                 {{ $categoria->nombre }}</h2>
             <a href="{{ route('proyect.index') }}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Volver</a>
-
         </div>
     @endisset
 
     @isset($listaProyecto1)
         <br />
-
-
         @can('crear-proyecto')
             <h2>
                 <a href="{{ route('proyect.create') }}"
@@ -34,9 +31,6 @@
              Un nuevo proyecto</a>
         </h2>
         @endcan --}}
-
-
-
 
         <br />
         <div class="container_cards">
@@ -103,60 +97,63 @@
     </ol>
 
     @can('view-proyect-delete')
+    @isset($proyectosEliminados)
+
     @if($proyectosEliminados->count() > 0)
-        <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                    <tr>
-                        <th scope="col" class="px-6 py-3">
-                            Titulo
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Acciones
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Acciones
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                    <th scope="col" class="px-6 py-3">
+                        Titulo
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Acciones
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        Acciones
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
                     @forelse ($proyectosEliminados as $proyecto_eliminado)
-                        <tr
-                            class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                {{ $proyecto_eliminado->titulo }}
-                            </th>
-                            <td class="px-6 py-4">
-                                <form action="{{ route('proyect.restore', $proyecto_eliminado->slug)}}" method="post" ">
-                                    @csrf
-                                    @method('PATCH')
+                    <tr
+                    class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        {{ $proyecto_eliminado->titulo }}
+                    </th>
+                    <td class="px-6 py-4">
+                        <form action="{{ route('proyect.restore', $proyecto_eliminado->slug)}}" method="post" ">
+                            @csrf
+                            @method('PATCH')
 
 
-                                    <button
-                                        class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Restaurar</button>
-                                </form>
-                            </td>
-                            <td class="px-6 py-4">
-                                <form action="{{ route('proyect.foreceDelete', $proyecto_eliminado->slug)}}" method="post" onsubmit="return confirm('¿Está seguro de eliminar este proyecto permanentemente?');">
+                            <button
+                            class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Restaurar</button>
+                        </form>
+                    </td>
+                    <td class="px-6 py-4">
+                        <form action="{{ route('proyect.foreceDelete', $proyecto_eliminado->slug)}}" method="post" onsubmit="return confirm('¿Está seguro de eliminar este proyecto permanentemente?');">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit"
-                                        class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Eliminar</button>
+                                    class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Eliminar</button>
                                 </form>
                             </td>
                         </tr>
-                    @empty
+                        @empty
                         <tr>No hay proyectos eliminados</tr>
-                    @endforelse
+                        @endforelse
 
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
 
-        </div>
-    @endif
-    @endcan
-    {{--
-    @foreach ($listaProyecto1 as $key => $value)
+            </div>
+            @endif
+            @endisset
+            @endcan
+            {{--
+            @foreach ($listaProyecto1 as $key => $value)
         <li>
             <pre> {{  var_dump($loop)   }}</pre>
         </li>

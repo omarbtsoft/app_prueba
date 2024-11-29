@@ -15,6 +15,7 @@ class ContactoControllers extends Controller
     public function index()
     {
         //
+        return response(); 
     }
 
     /**
