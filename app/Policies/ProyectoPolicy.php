@@ -9,8 +9,6 @@ use Illuminate\Auth\Access\Response;
 class ProyectoPolicy
 {
 
-
-
     public function   before($user ,$ability) {
         if($user->role=="superAdmin"){
             return true;
@@ -55,7 +53,9 @@ class ProyectoPolicy
      */
     public function delete(User $user, Proyectos $proyectos): bool
     {
-     return true ;
+    return $user->role=="admin" ;
+
+
     }
 
     /**
@@ -63,8 +63,7 @@ class ProyectoPolicy
      */
     public function restore(User $user, Proyectos $proyectos): bool
     {
-        //
-        return true ;
+        return $user->role=="admin" ;
     }
 
     /**
@@ -72,6 +71,13 @@ class ProyectoPolicy
      */
     public function forceDelete(User $user, Proyectos $proyectos): bool
     {
-      return true ;
+        return $user->role=="admin" ;
     }
+
+
+    public function proyecto_delete_list(User $user){
+        return $user->role=="admin" ;
+    }
+
+
 }

@@ -38,12 +38,15 @@ class ProyectoControllers extends Controller
         //$listaProyecto1 = DB::table("proyectos")->orderBy('created_at', 'desc')->paginate(5);
 
         $listaProyecto1 = Proyectos::with('categoria')->latest()->paginate(5);
+        //$listaProyecto1 = Proyectos::withTrashed()->with('categoria')->latest()->paginate(5);
+        //$listaProyecto1 = Proyectos::onlyTrashed()->with('categoria')->latest()->paginate(5);
         foreach ($listaProyecto1 as $proyecto) {
             // Agregar la diferencia de tiempo en formato relativo
             $proyecto->tiempo_relativo = Carbon::parse($proyecto->created_at)->diffForHumans();
         }
 
-        return view("proyectos", compact("listaProyecto1"));
+        //return view("proyectos", [compact("listaProyecto1"),"proyectosEliminados"=>Proyectos::onlyTrashed()->get() ]);
+        return view("proyectos", ["listaProyecto1"=>$listaProyecto1,"proyectosEliminados"=>Proyectos::onlyTrashed()->get() ]);
         //return view("proyectos", ["listaProyecto1" => $listaProyecto1, "newProyecto"=>new Proyectos()]);
     }
 
@@ -174,7 +177,47 @@ class ProyectoControllers extends Controller
      */
     public function destroy(Proyectos $proyecto)
     {
+        $this->authorize('delete', $proyecto);
+
+
         $proyecto->delete();
+
         return Redirect::route("proyect.index")->with('status', 'Se elimino  el proyecto');
+
     }
+
+    public function foreceDelete ($proyecto_slug) {
+
+        $proyecto = Proyectos::withTrashed()->where('slug', $proyecto_slug)->firstOrFail();
+
+        $this->authorize('admin', $proyecto);
+
+
+
+
+        Storage::delete($proyecto->image);
+
+        $proyecto->forceDelete();
+
+        return Redirect::route("proyect.index")->with('status', 'Se elimino  definitivamente   el proyecto');
+
+        }
+
+    public function restore($proyecto_slug){
+
+
+        $proyecto = Proyectos::withTrashed()->where('slug', $proyecto_slug)->firstOrFail();
+
+
+        $this->authorize('admin', $proyecto);
+
+
+        $proyecto->restore();
+
+        return Redirect::route("proyect.index")->with('status', 'Se  restauro   el proyecto');
+
+
+    }
+
+
 }

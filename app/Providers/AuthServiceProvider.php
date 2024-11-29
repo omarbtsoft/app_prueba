@@ -34,8 +34,11 @@ class AuthServiceProvider extends ServiceProvider
         //     return $user->role=="admin";
         // });
 
-
         Gate::define('crear-proyecto', [ProyectoPolicy::class, 'create']);
+        Gate::define('delete', [ProyectoPolicy::class,'delete']);
+        Gate::define('admin', [ProyectoPolicy::class,'create']);
+        Gate::define('view-proyect-delete', [ProyectoPolicy::class,'proyecto_delete_list']);
 
     }
+
 }

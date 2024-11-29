@@ -38,19 +38,23 @@ Route::middleware('auth')->group(function () {
 
 //Route::view("/app","productos", ["producto", "Es el prodcuto de Coca cola"]);
 
-$listaProyecto=[
-    "proyecto1 ",
-    "proyecto2 ",
-    "proyecto3 ",
-    "proyecto4 "
-];
+// $listaProyecto=[
+//     "proyecto1 ",
+//     "proyecto2 ",
+//     "proyecto3 ",
+//     "proyecto4 "
+// ];
 
 
-$listaProyecto1=[
-    ["titulo"=>"Mi proyecto1", "descripcion"=>"Este es mi proyecto 1 "],
-    ["titulo"=>"Mi proyecto2", "descripcion"=>"Este es mi proyecto 2 "],
-    ["titulo"=>"Mi proyecto3", "descripcion"=>"Este es mi proyecto 3 "]
-];
+// $listaProyecto1=[
+//     ["titulo"=>"Mi proyecto1", "descripcion"=>"Este es mi proyecto 1 "],
+//     ["titulo"=>"Mi proyecto2", "descripcion"=>"Este es mi proyecto 2 "],
+//     ["titulo"=>"Mi proyecto3", "descripcion"=>"Este es mi proyecto 3 "]
+// ];
+
+
+
+
 
 Route::view("/home","home")->name("home");
 
@@ -62,26 +66,34 @@ Route::view("/contact","contacto")->name("contact");
 //Route::get("/proyectos", 'ProyectoController' )->name("proyectos");
 
 Route::resource('proyectos', ProyectoControllers::class)->names("proyect");
-
+Route::patch("proyectos/{proyecto}/restore", [ProyectoControllers::class, 'restore'])->name("proyect.restore");
+Route::delete("proyectos/{proyecto}/forceDelete", [ProyectoControllers::class, 'foreceDelete'])->name("proyect.foreceDelete");
 
 Route::get("/categorias/{categoria}", [CategoriaController::class,'show'])->name("categoria.show");
-//Route::resource('proyectos', ProyectoControllers::class)->names("proyect")->middleware('auth');
-/*
-Route::get('/proyectos', [ProyectoControllers::class, 'index'])->name("proyect");
-Route::get('/proyectos/crear', [ProyectoControllers::class, 'create'])->name("proyect.create");
-Route::get('/proyectos/{proyecto}', [ProyectoControllers::class, 'show'])->name("proyect.show");
-Route::get('/proyectos/{proyecto}/editar', [ProyectoControllers::class, 'edit'])->name("proyect.edit");
-Route::post('/proyectos', [ProyectoControllers::class, 'store'])->name("proyect.store");
-Route::patch('/proyectos/{proyecto}', [ProyectoControllers::class, 'update'])->name("proyect.update");
-Route::delete('/proyectos/{proyecto}', [ProyectoControllers::class, 'destroy'])->name("proyect.destroy");
-*/
-
 
 
 Route::post('/contactos', [ContactoControllers::class, 'store'])->name("contactos_post");
 
 
-//Route::resource('user', UserController::class);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 Route::get('/', function () {
@@ -115,3 +127,18 @@ Route::get("home1", function () {
     return view("home", ["title" =>$title]);
 })->name("home");
 require __DIR__.'/auth.php';
+
+
+
+//Route::resource('proyectos', ProyectoControllers::class)->names("proyect")->middleware('auth');
+/*
+Route::get('/proyectos', [ProyectoControllers::class, 'index'])->name("proyect");
+Route::get('/proyectos/crear', [ProyectoControllers::class, 'create'])->name("proyect.create");
+Route::get('/proyectos/{proyecto}', [ProyectoControllers::class, 'show'])->name("proyect.show");
+Route::get('/proyectos/{proyecto}/editar', [ProyectoControllers::class, 'edit'])->name("proyect.edit");
+Route::post('/proyectos', [ProyectoControllers::class, 'store'])->name("proyect.store");
+Route::patch('/proyectos/{proyecto}', [ProyectoControllers::class, 'update'])->name("proyect.update");
+Route::delete('/proyectos/{proyecto}', [ProyectoControllers::class, 'destroy'])->name("proyect.destroy");
+*/
+
+//Route::resource('user', UserController::class);
