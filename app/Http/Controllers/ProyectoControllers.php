@@ -188,24 +188,17 @@ class ProyectoControllers extends Controller
             $file_url=  request()->file('image')->store('imagenes');// Se tiene que configurar lo que  es el disco duro o seq se tiene que hacer la referencia en file sistem o en .env
             $proyecto->image=$file_url;
             $proyecto->save();
-
             // $image = Image::make(Storage::get($proyecto->image));
             // $image->widen(600)->encode();
             // Storage::put($proyecto->image, $image);
-
             ProyectSaved::dispatch($proyecto);
         } else {
             $proyecto->update(array_filter($request->validated()));
         }
         //return dd(array_filter($request->validated()));
-
         //$proyecto->update($request->validated());
-
         ///Cache::flush();
-
-
         return Redirect::route("proyect.show", $proyecto)->with('status', 'Se actualizo el proyecto');
-
     }
 
     /**
@@ -228,9 +221,7 @@ class ProyectoControllers extends Controller
 
         $proyecto = Proyectos::withTrashed()->where('slug', $proyecto_slug)->firstOrFail();
 
-        $this->authorize('admin', $proyecto);
-
-
+        $this->authorize('restore', $proyecto);
 
 
         Storage::delete($proyecto->image);

@@ -5,6 +5,7 @@ use App\Http\Controllers\ContactoControllers;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProyectoControllers;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 /*
 |--------------------------------------------------------------------------
@@ -30,6 +31,8 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -52,9 +55,6 @@ Route::middleware('auth')->group(function () {
 //     ["titulo"=>"Mi proyecto2", "descripcion"=>"Este es mi proyecto 2 "],
 //     ["titulo"=>"Mi proyecto3", "descripcion"=>"Este es mi proyecto 3 "]
 // ];
-
-
-
 
 
 Route::view("/home","home")->name("home");

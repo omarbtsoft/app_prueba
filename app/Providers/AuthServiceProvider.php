@@ -19,12 +19,9 @@ class AuthServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected $policies = [
-        //
+
     ];
 
-    /**
-     * Register any authentication / authorization services.
-     */
     public function boot(): void
     {
 
@@ -37,6 +34,7 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('crear-proyecto', [ProyectoPolicy::class, 'create']);
         Gate::define('delete', [ProyectoPolicy::class,'delete']);
         Gate::define('admin', [ProyectoPolicy::class,'create']);
+        Gate::define('restore', [ProyectoPolicy::class,'restore']);
         Gate::define('view-proyect-delete', [ProyectoPolicy::class,'proyecto_delete_list']);
 
     }

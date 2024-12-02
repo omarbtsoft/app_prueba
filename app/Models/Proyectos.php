@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use app\Presentes\ProyectoPresents; 
 
 class Proyectos extends Model
 {
@@ -25,6 +26,13 @@ class Proyectos extends Model
     public function categoria() {
         return $this->belongsTo(Categoria::class);
     }
+
+    public function  present(){
+       return new ProyectoPresents($this); 
+    }
+
+
+
 
 
 

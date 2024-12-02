@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Models\Proyectos;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
+use Illuminate\Support\Facades\Log;
 
 class ProyectoPolicy
 {
@@ -35,8 +36,10 @@ class ProyectoPolicy
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user): bool
+    public function create(User $user ): bool
     {
+
+
         return $user->role=="admin" ;
     }
 
@@ -63,6 +66,11 @@ class ProyectoPolicy
      */
     public function restore(User $user, Proyectos $proyectos): bool
     {
+        
+        //Log::info('Datos del proyecto  verificando ', ['proyecto' => $proyectos]);
+        //return $proyectos->titulo=="nose"; 
+        //dd($user); 
+
         return $user->role=="admin" ;
     }
 

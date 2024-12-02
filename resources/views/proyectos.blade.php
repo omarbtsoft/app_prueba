@@ -97,9 +97,9 @@
     </ol>
 
     @can('view-proyect-delete')
-    @isset($proyectosEliminados)
 
-    @if($proyectosEliminados->count() > 0)
+
+    @if( isset($proyectosEliminados) && $proyectosEliminados->count() > 0)
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
         <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
             <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -126,8 +126,6 @@
                         <form action="{{ route('proyect.restore', $proyecto_eliminado->slug)}}" method="post" ">
                             @csrf
                             @method('PATCH')
-
-
                             <button
                             class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Restaurar</button>
                         </form>
@@ -150,7 +148,6 @@
 
             </div>
             @endif
-            @endisset
             @endcan
             {{--
             @foreach ($listaProyecto1 as $key => $value)
