@@ -4,6 +4,7 @@ use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ContactoControllers;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProyectoControllers;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
@@ -64,6 +65,8 @@ Route::view("/about","about")->name("about");
 
 Route::view("/contact","contacto")->name("contact");
 //Route::get("/proyectos", 'ProyectoController' )->name("proyectos");
+
+Route::resource("usuarios",UserController::class)->names("usuario");
 
 Route::resource('proyectos', ProyectoControllers::class)->names("proyect");
 Route::patch("proyectos/{proyecto}/restore", [ProyectoControllers::class, 'restore'])->name("proyect.restore");

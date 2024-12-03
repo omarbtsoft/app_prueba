@@ -24,6 +24,4 @@
             </form>
         @endcan
     @endauth
-
-
 @endsection

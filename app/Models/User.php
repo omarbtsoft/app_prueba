@@ -44,8 +44,14 @@ class User extends Authenticatable
     ];
 
 
-
     public function hasRole($value){
             $this->role=$value ;
+    }
+
+    public function setPasswordAttribute($value){
+        $this->attributes['password']=bcrypt($value);
+    }
+    public function setNameAttribute($value){
+      $this->attributes['name']=$value;
     }
 }

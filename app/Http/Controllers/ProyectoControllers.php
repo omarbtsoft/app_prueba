@@ -6,6 +6,7 @@ use App\Events\ProyectSaved;
 use App\Http\Requests\CreateProyectRequest;
 use App\Models\Categoria;
 use App\Models\Proyectos;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redis;
@@ -16,6 +17,8 @@ use Illuminate\Support\Facades\Storage;
 
 class ProyectoControllers extends Controller
 {
+
+
 
     function __construct()
     {
@@ -144,17 +147,19 @@ class ProyectoControllers extends Controller
      */
     public function show(Proyectos $proyecto)
     {
-
        //return $id ;
         //$proyecto= Proyectos::findOrFail($id);
+
+
         return view("proyectos.show", ["proyecto" => $proyecto]);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Proyectos $proyecto)
+    public function edit(Proyectos $proyecto )
     {
+
         $this->authorize('crear-proyecto');
         $categorias = Cache::remember("categoria.all", 5, function ()  {
             return Categoria::pluck('nombre', 'id');
@@ -207,14 +212,9 @@ class ProyectoControllers extends Controller
     public function destroy(Proyectos $proyecto)
     {
         $this->authorize('delete', $proyecto);
-
-
         $proyecto->delete();
-
         //Cache::flush();
-
         return Redirect::route("proyect.index")->with('status', 'Se elimino  el proyecto');
-
     }
 
     public function foreceDelete ($proyecto_slug) {
