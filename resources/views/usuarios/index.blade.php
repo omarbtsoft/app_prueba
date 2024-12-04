@@ -3,6 +3,7 @@
 @section('contenido')
 <h1>Lista de usuarios</h1>
 @isset($lista_usuarios)
+<a  href="{{ route('usuario.create') }}" type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-10 mb-10 my-11 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Crear un nuevo usuario</a>
 <div class="relative overflow-x-auto">
     <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -40,15 +41,20 @@
                     {{ $usuario->updated_at  }}
                 </td>
                 <td class="px-6 py-4">
+                    @can('update', new App\Models\User)
                     <a href="{{ route('usuario.edit', $usuario) }}">
                         Editar
                     </a>
+                    @endcan
                     |
-                    <a href="{{ route('usuario.destroy', $usuario) }}"
-                        onclick="return confirm('¿Está seguro de eliminar este usuario?')">
-                        Eliminar
-                    </a>
-                </td>
+                    @can('delete', new App\Models\User)
+                    <form   action="{{ route('usuario.destroy', $usuario) }}" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium  rounded-lg text-sm px-1 py-1 me-0 mb-0 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Eliminar</button>
+                    </form>
+                    @endcan
+            </td>
                 </td>
 
             </tr>
@@ -59,7 +65,7 @@
     </table>
 </div>
 
-@endisset
 
+@endisset
 
 @endsection

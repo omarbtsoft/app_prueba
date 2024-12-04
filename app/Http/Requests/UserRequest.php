@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UserRequest extends FormRequest
 {
@@ -23,7 +24,9 @@ class UserRequest extends FormRequest
     {
         return [
             "name"=> "required",
-            "password"=> "required|confirmed", // campo==campo_confirmation
+            "email"=> ["required",  Rule::unique('users')->ignore($this->route('usuario'))],
+            "password"=> $this->route('usuario')? "nullable|confirmed":"required|confirmed", // campo==campo_confirmation
+            'role'=>['required', 'in:admin,user']
         ];
     }
 }

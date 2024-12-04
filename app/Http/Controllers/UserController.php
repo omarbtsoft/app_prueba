@@ -19,6 +19,8 @@ class UserController extends Controller
      */
     public function index()
     {
+
+
         $lista_usuarios= $this->usuario->getUsuarios();
         //$lista_usuarios= User::select("name","email", "created_at", "updated_at")->get();
         return view("usuarios.index",compact("lista_usuarios"));
@@ -32,15 +34,19 @@ class UserController extends Controller
      */
     public function create(Request $request)
     {
-
+        return view("usuarios.create", ["usuario"=>new User()]);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(UserRequest $request)
     {
 
+        //dd($request->validated());
+        $newUsuario =new User($request->validated());
+        $newUsuario->save();
+        return redirect()->route("usuario.index")->with("success","Se  agrego un nuevo usuario");
 
     }
 
@@ -57,6 +63,7 @@ class UserController extends Controller
      */
     public function edit(User $usuario)
     {
+        $this->authorize('update');
         //dd($usuario);
         return view("usuarios.edit",compact("usuario"));
 
@@ -65,14 +72,20 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, User $usuario)
+    public function update(UserRequest $request, User $usuario)
     {
-        // $usuario->update($request->all());
-       $usuario->name=$request->name;
-       $usuario->email=$request->email;
-       $usuario->save();
-        //dd($usuario);
-        return redirect()->back()->with("success","Se actualizo los datos de  usuario");
+
+        $this->authorize('update');
+       //dd($request->only('name', 'email'));
+
+//       dd($request->validated());
+
+      //dd($request->validated());
+      $usuario->update($request->validated());
+      //$usuario->save();
+    //     //dd($usuario);
+         //return redirect()->back()->with("success","Se actualizo los datos de  usuario");
+         return redirect()->route("usuario.index")->with("success", "Se actualizo el usuario");
     }
 
     /**
@@ -80,6 +93,12 @@ class UserController extends Controller
      */
     public function destroy(User $usuario)
     {
-        return $usuario;
+
+        $this->authorize('delete');
+        // Esto  se tiene que veriricar
+        //dd($usuario->delete()));
+        $usuario->delete();
+        return redirect()->route("usuario.index")->with("success","Se elimino el usuario");
+
     }
 }

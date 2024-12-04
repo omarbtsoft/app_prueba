@@ -149,8 +149,6 @@ class ProyectoControllers extends Controller
     {
        //return $id ;
         //$proyecto= Proyectos::findOrFail($id);
-
-
         return view("proyectos.show", ["proyecto" => $proyecto]);
     }
 
